@@ -19,7 +19,6 @@ from __future__ import annotations
 from collections.abc import Iterable
 import dataclasses
 import typing
-from typing import cast
 import warnings
 
 from langextract import annotation
@@ -35,7 +34,7 @@ from langextract.core import tokenizer as tokenizer_lib
 
 
 def extract(
-    text_or_documents: typing.Any,
+    text_or_documents: str | Iterable[data.Document],
     prompt_description: str | None = None,
     examples: typing.Sequence[typing.Any] | None = None,
     model_id: str = "gemini-2.5-flash",
@@ -362,23 +361,15 @@ def extract(
     )
     return result
   else:
-    raw_documents = cast(Iterable[data.Document], text_or_documents)
     if additional_context is not None:
-      documents = []
-      for doc in raw_documents:
-        if doc.additional_context is None:
-          new_doc = data.Document(
-              text=doc.text,
-              document_id=doc._document_id,
-              additional_context=additional_context,
-          )
-          if doc._tokenized_text is not None:
-            new_doc.tokenized_text = doc._tokenized_text
-          documents.append(new_doc)
-        else:
-          documents.append(doc)
+      documents = (
+          doc.with_additional_context(additional_context)
+          if doc.additional_context is None
+          else doc
+          for doc in text_or_documents
+      )
     else:
-      documents = raw_documents
+      documents = text_or_documents
     result = annotator.annotate_documents(
         documents=documents,
         resolver=res,

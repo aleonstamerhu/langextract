@@ -180,6 +180,27 @@ class Document:
   def tokenized_text(self, value: tokenizer.TokenizedText) -> None:
     self._tokenized_text = value
 
+  def with_additional_context(
+      self, additional_context: str | None
+  ) -> "Document":
+    """Return a copy of this Document with additional_context overridden.
+
+    The copy preserves an explicitly-set document_id and any cached
+    tokenization without invoking the lazy property getters, so the
+    original is never mutated.
+
+    Args:
+      additional_context: Value to set on the returned copy.
+    """
+    new_doc = Document(
+        text=self.text,
+        document_id=self._document_id,
+        additional_context=additional_context,
+    )
+    if self._tokenized_text is not None:
+      new_doc.tokenized_text = self._tokenized_text
+    return new_doc
+
 
 @dataclasses.dataclass
 class AnnotatedDocument:
