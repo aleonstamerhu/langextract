@@ -75,7 +75,8 @@ warn_unused_configs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=langextract --cov-report=term-missing --cov-report=xml"
+# Removed --cov-report=xml locally since I don't use CI coverage uploads
+addopts = "--cov=langextract --cov-report=term-missing"
 
 [tool.coverage.run]
 source = ["src/langextract"]
