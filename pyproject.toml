@@ -78,7 +78,8 @@ allow_untyped_defs = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 # Removed --cov-report=xml locally since I don't use CI coverage uploads
-addopts = "--cov=langextract --cov-report=term-missing"
+# Added -v for more verbose output so I can see which tests pass/fail at a glance
+addopts = "--cov=langextract --cov-report=term-missing -v"
 
 [tool.coverage.run]
 source = ["src/langextract"]
